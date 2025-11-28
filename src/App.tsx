@@ -42,10 +42,7 @@ import {
   Search,
   Download,
   RotateCw,
-  Flag,
-  BarChart3,
-  Clock,
-  Calendar
+  Flag
 } from 'lucide-react';
 
 // --- 类型定义 ---
@@ -206,21 +203,12 @@ const isJudgmentCorrect = (userAns: string, realAns: string) => {
     return u === r;
 };
 
-const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 6) return '凌晨好，注意休息';
-    if (hour < 12) return '早上好，开始学习吧';
-    if (hour < 14) return '中午好，记得午休';
-    if (hour < 18) return '下午好，继续加油';
-    return '晚上好，复习一下';
-};
-
 // --- 子组件 ---
 
 const HighlightIndicator = ({ level }: { level: number }) => {
   if (!level) return null;
   const colors = ['', 'bg-[#F4D03F]', 'bg-[#EB984E]', 'bg-[#E74C3C]', 'bg-[#AF7AC5]', 'bg-[#5DADE2]'];
-  return <div className={`w-2.5 h-2.5 rounded-full ${colors[level]} mr-2 inline-block shadow-sm ring-2 ring-white dark:ring-slate-700`}></div>;
+  return <div className={`w-3 h-3 rounded-full ${colors[level]} mr-2 inline-block shadow-sm ring-2 ring-white`}></div>;
 };
 
 const AutoSaveTextArea = ({ 
@@ -241,17 +229,17 @@ const AutoSaveTextArea = ({
     const handleBlur = () => { if (localValue !== value) onChange(localValue); };
 
     return (
-        <div className="relative group">
+        <div className="relative">
             <textarea 
                 placeholder={placeholder}
-                className={`w-full h-48 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl text-slate-700 dark:text-slate-200 p-5 focus:outline-none focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-900/50 focus:bg-white dark:focus:bg-slate-800 transition-all resize-none leading-relaxed ${fontSizeClass} shadow-inner`}
+                className={`w-full h-48 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-700 dark:text-slate-200 p-4 focus:outline-none focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-900 focus:bg-white dark:focus:bg-slate-800 transition-all resize-none leading-relaxed ${fontSizeClass}`}
                 value={localValue}
                 onChange={(e) => setLocalValue(e.target.value)}
                 onBlur={handleBlur}
                 disabled={disabled}
             />
-             <div className="absolute bottom-4 right-4 text-xs text-slate-400 dark:text-slate-600 pointer-events-none transition-opacity group-focus-within:opacity-50">
-                点击空白处自动保存
+             <div className="absolute bottom-4 right-4 text-xs text-slate-300 dark:text-slate-500 pointer-events-none">
+                输入后点击空白处保存
             </div>
         </div>
     );
@@ -291,7 +279,7 @@ const NoteEditor = ({
         if (file) {
             const reader = new FileReader();
             reader.onload = (ev) => {
-                const imgHtml = `<img src="${ev.target?.result}" class="max-w-full rounded-xl my-3 border border-slate-100 dark:border-slate-700 shadow-sm" />`;
+                const imgHtml = `<img src="${ev.target?.result}" class="max-w-full rounded-lg my-2 border border-slate-200 dark:border-slate-700" />`;
                 execCmd('insertHTML', imgHtml);
             };
             reader.readAsDataURL(file);
@@ -303,7 +291,7 @@ const NoteEditor = ({
         if (file) {
             const reader = new FileReader();
             reader.onload = (ev) => {
-                const audioHtml = `<div class="my-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700"><audio controls src="${ev.target?.result}" class="w-full"></audio></div>`;
+                const audioHtml = `<div class="my-2 p-2 bg-slate-100 dark:bg-slate-800 rounded-lg"><audio controls src="${ev.target?.result}" class="w-full"></audio></div>`;
                 execCmd('insertHTML', audioHtml);
             };
             reader.readAsDataURL(file);
@@ -327,46 +315,46 @@ const NoteEditor = ({
 
     return (
         <div className="flex flex-col h-full bg-white dark:bg-slate-900 relative z-20">
-            <div className="flex justify-between items-center px-4 py-3 border-b border-slate-100 dark:border-slate-800">
-                <button onClick={handleBack} className="p-2 -ml-2 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full transition-colors">
-                    {isEditing ? <X size={20}/> : <ChevronLeft size={20}/>}
+            <div className="flex justify-between items-center p-4 border-b border-slate-100 dark:border-slate-800">
+                <button onClick={handleBack} className="text-slate-500 dark:text-slate-400">
+                    {isEditing ? '取消' : '关闭'}
                 </button>
-                <span className="font-bold text-slate-800 dark:text-slate-200 text-sm">
+                <span className="font-bold text-slate-800 dark:text-slate-200">
                     {isEditing ? (initialContent ? '编辑笔记' : '新建笔记') : '阅读笔记'}
                 </span>
                 {isEditing ? (
                     <button 
                         onClick={() => onSave(title, contentRef.current?.innerHTML || '', selectedFolderId)} 
-                        className="text-indigo-600 dark:text-indigo-400 font-medium text-sm px-2 py-1 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-colors"
+                        className="bg-indigo-600 text-white px-4 py-1.5 rounded-full text-sm font-medium hover:bg-indigo-700"
                     >
                         保存
                     </button>
                 ) : (
                     <button 
                         onClick={() => setIsEditing(true)} 
-                        className="text-slate-600 dark:text-slate-300 p-2 -mr-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full transition-colors"
+                        className="text-indigo-600 dark:text-indigo-400 flex items-center"
                     >
-                        <Edit3 size={18} />
+                        <Edit3 size={18} className="mr-1"/> 编辑
                     </button>
                 )}
             </div>
             
-            <div className="px-5 py-4 space-y-3">
+            <div className="p-4 border-b border-slate-100 dark:border-slate-800 space-y-3">
                 <input 
                     type="text" 
-                    placeholder="无标题" 
-                    className="w-full text-2xl font-bold bg-transparent outline-none text-slate-900 dark:text-white placeholder-slate-300 disabled:opacity-100"
+                    placeholder="请输入标题..." 
+                    className="w-full text-xl font-bold bg-transparent outline-none text-slate-800 dark:text-white placeholder-slate-300 disabled:opacity-100"
                     value={title}
                     onChange={e => setTitle(e.target.value)}
                     disabled={!isEditing}
                 />
                 {isEditing && (
-                    <div className="flex items-center space-x-2 text-sm text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50 self-start px-3 py-1.5 rounded-lg">
-                        <Folder size={14}/>
+                    <div className="flex items-center">
+                        <Folder size={16} className="text-slate-400 mr-2"/>
                         <select 
                             value={selectedFolderId}
                             onChange={e => setSelectedFolderId(e.target.value)}
-                            className="bg-transparent border-none outline-none appearance-none pr-4"
+                            className="bg-slate-50 dark:bg-slate-800 text-sm text-slate-600 dark:text-slate-300 p-1 rounded border-none outline-none"
                         >
                             {folders.map(f => (
                                 <option key={f.id} value={f.id}>{f.name}</option>
@@ -377,31 +365,31 @@ const NoteEditor = ({
             </div>
 
             {isEditing && (
-                <div className="flex items-center gap-3 px-5 py-2 border-y border-slate-50 dark:border-slate-800/50 overflow-x-auto">
-                    <button onClick={() => execCmd('bold')} className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300"><span className="font-bold">B</span></button>
-                    <div className="w-px h-4 bg-slate-200 dark:bg-slate-700"></div>
-                    <button onClick={() => handleHighlight('#fef08a')} className="w-5 h-5 rounded-full bg-yellow-200 ring-1 ring-black/5"></button>
-                    <button onClick={() => handleHighlight('#bbf7d0')} className="w-5 h-5 rounded-full bg-green-200 ring-1 ring-black/5"></button>
-                    <button onClick={() => handleHighlight('#fbcfe8')} className="w-5 h-5 rounded-full bg-pink-200 ring-1 ring-black/5"></button>
-                    <div className="w-px h-4 bg-slate-200 dark:bg-slate-700"></div>
-                    <button onClick={() => fileInputRef.current?.click()} className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300"><ImageIcon size={18}/></button>
-                    <button onClick={() => audioInputRef.current?.click()} className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300"><Mic size={18}/></button>
+                <div className="flex items-center gap-2 p-2 px-4 bg-slate-50 dark:bg-slate-800 overflow-x-auto animate-in slide-in-from-top-2 fade-in">
+                    <button onClick={() => execCmd('bold')} className="p-2 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300"><span className="font-bold">B</span></button>
+                    <div className="w-px h-6 bg-slate-300 dark:bg-slate-600 mx-1"></div>
+                    <button onClick={() => handleHighlight('#fef08a')} className="w-6 h-6 rounded-full bg-yellow-200 border border-slate-200"></button>
+                    <button onClick={() => handleHighlight('#bbf7d0')} className="w-6 h-6 rounded-full bg-green-200 border border-slate-200"></button>
+                    <button onClick={() => handleHighlight('#fbcfe8')} className="w-6 h-6 rounded-full bg-pink-200 border border-slate-200"></button>
+                    <div className="w-px h-6 bg-slate-300 dark:bg-slate-600 mx-1"></div>
+                    <button onClick={() => fileInputRef.current?.click()} className="p-2 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center"><ImageIcon size={18}/></button>
+                    <button onClick={() => audioInputRef.current?.click()} className="p-2 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center"><Mic size={18}/></button>
                     <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleImageUpload} />
                     <input type="file" ref={audioInputRef} className="hidden" accept="audio/*" onChange={handleAudioUpload} />
                 </div>
             )}
 
             <div 
-                className={`flex-1 px-5 py-4 overflow-y-auto outline-none text-slate-700 dark:text-slate-300 text-lg leading-relaxed editor-content ${!isEditing ? 'read-only' : ''}`}
+                className={`flex-1 p-4 overflow-y-auto outline-none text-slate-700 dark:text-slate-300 text-lg leading-relaxed editor-content ${!isEditing ? 'read-only' : ''}`}
                 contentEditable={isEditing}
                 ref={contentRef}
                 suppressContentEditableWarning
-                data-placeholder="开始记录..."
+                data-placeholder="在此输入正文..."
             />
             <style>{`
-                .editor-content:empty:before { content: attr(data-placeholder); color: #cbd5e1; }
-                .editor-content img { max-width: 100%; border-radius: 12px; display: block; margin: 12px 0; }
-                .read-only a { pointer-events: auto; text-decoration: underline; color: #6366f1; }
+                .editor-content:empty:before { content: attr(data-placeholder); color: #94a3b8; }
+                .editor-content img { max-width: 100%; border-radius: 8px; }
+                .read-only a { pointer-events: auto; }
             `}</style>
         </div>
     );
@@ -444,7 +432,7 @@ const QuestionCard = memo(({
   const wrongCount = userState.wrongList[q.id] || 0;
   const isLastQuestion = data.index === data.list.length - 1;
 
-  const cardBgClass = "bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-white/20 dark:border-white/10";
+  const cardBgClass = "bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm";
 
   const getFontSizeClass = (type: 'content' | 'option') => {
       const size = userState.fontSize || 'normal';
@@ -462,11 +450,11 @@ const QuestionCard = memo(({
 
   const getQuestionTypeStyle = (type: QuestionType) => {
       switch (type) {
-          case 'multiple': return 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300';
-          case 'single': return 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300';
-          case 'judgment': return 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300';
-          case 'fill': return 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-300';
-          case 'essay': return 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300';
+          case 'multiple': return 'bg-amber-100 text-amber-700 border border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800';
+          case 'single': return 'bg-blue-50 text-blue-600 border border-blue-100 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800';
+          case 'judgment': return 'bg-purple-50 text-purple-600 border border-purple-100 dark:bg-purple-900/30 dark:text-purple-400 dark:border-purple-800';
+          case 'fill': return 'bg-cyan-50 text-cyan-600 border border-cyan-100 dark:bg-cyan-900/30 dark:text-cyan-400 dark:border-cyan-800';
+          case 'essay': return 'bg-rose-50 text-rose-600 border border-rose-100 dark:bg-rose-900/30 dark:text-rose-400 dark:border-rose-800';
           default: return 'bg-slate-100 text-slate-500';
       }
   };
@@ -487,23 +475,21 @@ const QuestionCard = memo(({
       const userVal = data.answers[q.id] || '';
       const isSelected = q.type === 'multiple' ? userVal.includes(optKey) : userVal === optKey;
       
-      let btnClass = "border-slate-100 bg-slate-50/50 text-slate-600 hover:bg-slate-100 dark:border-slate-700/50 dark:bg-slate-800/30 dark:text-slate-300 dark:hover:bg-slate-800/50";
-      let iconClass = "bg-slate-200/80 text-slate-500 dark:bg-slate-700 dark:text-slate-400";
+      let btnClass = "border-slate-100 bg-slate-50 text-slate-600 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-300 dark:hover:bg-slate-800";
+      let iconClass = "bg-slate-200 text-slate-500 dark:bg-slate-700 dark:text-slate-400";
       
       if (isSelected) {
-          btnClass = "border-indigo-200 bg-indigo-50 text-indigo-700 shadow-sm ring-1 ring-indigo-200 dark:bg-indigo-900/40 dark:text-indigo-300 dark:border-indigo-700 dark:ring-indigo-800";
+          btnClass = "border-indigo-100 bg-indigo-50 text-indigo-700 shadow-sm ring-1 ring-indigo-200 dark:bg-indigo-900/40 dark:text-indigo-300 dark:border-indigo-800 dark:ring-indigo-800";
           iconClass = "bg-indigo-500 text-white dark:bg-indigo-600";
       }
 
       if ((!data.isExam && data.showAnswer) || data.examSubmitted) {
-          const cleanRealAns = q.answer.replace(/[^A-F]/gi, '');
-          const isCorrect = cleanRealAns.includes(optKey); 
-          
+          const isCorrect = q.answer.includes(optKey); 
           if (isCorrect) {
-              btnClass = "border-emerald-200 bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300 dark:border-emerald-700 dark:ring-emerald-800";
+              btnClass = "border-emerald-100 bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300 dark:border-emerald-800 dark:ring-emerald-800";
               iconClass = "bg-emerald-500 text-white dark:bg-emerald-600";
           } else if (isSelected) {
-              btnClass = "border-rose-200 bg-rose-50 text-rose-700 ring-1 ring-rose-200 dark:bg-rose-900/40 dark:text-rose-300 dark:border-rose-700 dark:ring-rose-800";
+              btnClass = "border-rose-100 bg-rose-50 text-rose-700 ring-1 ring-rose-200 dark:bg-rose-900/40 dark:text-rose-300 dark:border-rose-800 dark:ring-rose-800";
               iconClass = "bg-rose-500 text-white dark:bg-rose-600";
           }
       }
@@ -515,9 +501,9 @@ const QuestionCard = memo(({
                   if (data.examSubmitted) return;
                   onAnswerChange(q.id, optKey, q.type);
               }}
-              className={`w-full text-left p-4 rounded-2xl border transition-all duration-200 flex items-start ${btnClass} ${optionSize}`}
+              className={`w-full text-left p-4 rounded-xl border transition-all flex items-center ${btnClass} ${optionSize}`}
           >
-              <span className={`w-6 h-6 flex-shrink-0 flex items-center justify-center rounded-full text-xs font-bold mt-0.5 mr-3 transition-colors ${iconClass}`}>{optKey}</span>
+              <span className={`w-6 h-6 flex-shrink-0 flex items-center justify-center rounded-full text-xs font-bold mr-3 ${iconClass}`}>{optKey}</span>
               <span className="leading-snug">{opt.replace(/^[A-Z][\.,、\)\s\uff0e\u3001]|^\([A-Z]\)/, '').trim()}</span>
           </button>
       )
@@ -525,55 +511,58 @@ const QuestionCard = memo(({
 
   return (
     <div className="flex flex-col h-full relative z-10 p-4 pb-24 max-w-2xl mx-auto w-full">
-      <div className="flex justify-between items-center mb-4">
-        <button onClick={onExit} className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white flex items-center bg-white/80 dark:bg-black/40 backdrop-blur-sm p-2.5 pr-4 rounded-full shadow-sm transition-all active:scale-95">
-           <ChevronLeft size={20}/> <span className="text-sm font-bold ml-1">退出</span>
+      <div className="flex justify-between items-center mb-6">
+        <button onClick={onExit} className="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 flex items-center bg-white/80 dark:bg-black/40 backdrop-blur-sm p-2 rounded-full shadow-sm">
+           <ChevronLeft size={20}/> <span className="text-sm font-medium ml-1">退出</span>
         </button>
-        
-        {/* 顶部进度条 */}
-        <div className="flex-1 mx-4 h-1.5 bg-slate-200/50 dark:bg-slate-700/50 rounded-full overflow-hidden backdrop-blur-sm">
-            <div 
-                className="h-full bg-indigo-500 transition-all duration-300 ease-out" 
-                style={{ width: `${((data.index + 1) / data.list.length) * 100}%` }}
-            ></div>
+        <div className={`text-slate-600 dark:text-slate-300 font-bold text-sm px-4 py-1.5 rounded-full shadow-sm ${cardBgClass}`}>
+          {data.index + 1} / {data.list.length}
         </div>
         
-        <div className={`text-slate-500 dark:text-slate-400 font-mono font-bold text-xs px-2`}>
-          {data.index + 1}/{data.list.length}
+        <div className="flex gap-2 items-center">
+           {/* Submit Anytime Button */}
+           {!data.examSubmitted && data.isExam && (
+               <button onClick={onSubmitExam} className="bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-lg hover:bg-indigo-700 transition-all active:scale-95 mr-2 flex items-center">
+                   <Flag size={14} className="mr-1"/> 交卷
+               </button>
+           )}
+           
+           <button 
+              onClick={() => onHighlight(q.id)} 
+              className={`p-2 rounded-full transition-colors flex items-center justify-center shadow-sm ${highlightLevel > 0 ? 'bg-orange-100 text-orange-600 ring-1 ring-orange-200 dark:bg-orange-900/50 dark:text-orange-300' : 'bg-white/80 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400'}`}
+           >
+             <div className={`w-2.5 h-2.5 rounded-full ${highlightLevel > 0 ? 'bg-orange-500' : 'bg-slate-300 dark:bg-slate-600'}`}></div>
+           </button>
+           <button onClick={() => onToggleBookmark(q.id)} className="p-2 rounded-full bg-white/80 dark:bg-slate-800/80 shadow-sm hover:bg-white dark:hover:bg-slate-700 text-slate-400 dark:text-slate-500 transition-all">
+             <Star size={20} className={isBookmarked ? "fill-amber-400 text-amber-400" : "currentColor"} />
+           </button>
         </div>
       </div>
 
-      <div className={`flex-1 overflow-y-auto p-6 md:p-8 rounded-[2rem] shadow-xl dark:shadow-black/20 transition-all duration-300 ${cardBgClass}`}>
-          <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-2">
-                  <span className={`text-[10px] px-2.5 py-1 rounded-lg font-bold tracking-wider uppercase shadow-sm ${getQuestionTypeStyle(q.type)}`}>
+      <div className={`flex-1 overflow-y-auto p-6 md:p-8 rounded-3xl border border-slate-100 dark:border-slate-800 mb-4 transition-all duration-300 ${cardBgClass}`}>
+          <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                  <span className={`text-[10px] px-2 py-1 rounded font-bold tracking-wider uppercase ${getQuestionTypeStyle(q.type)}`}>
                     {getQuestionTypeLabel(q.type)}
                   </span>
-                  <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400 truncate max-w-[120px] bg-slate-100/80 dark:bg-slate-800/80 px-2.5 py-1 rounded-lg">
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 truncate max-w-[150px] border border-slate-200 dark:border-slate-700 px-2 py-1 rounded bg-slate-100/50 dark:bg-slate-800/50">
                      {categoryName}
                   </span>
               </div>
-              <div className="flex items-center gap-2">
-                  {isWrong && (
-                     <span className="text-[10px] font-bold text-rose-500 bg-rose-50 dark:bg-rose-900/30 px-2 py-1 rounded-lg flex items-center">
-                         <AlertTriangle size={10} className="mr-1"/> 错 {wrongCount} 次
-                     </span>
-                  )}
-                  <div className="flex bg-slate-100/50 dark:bg-slate-800/50 rounded-full p-1">
-                       <button 
-                          onClick={() => onHighlight(q.id)} 
-                          className={`p-1.5 rounded-full transition-all ${highlightLevel > 0 ? 'bg-white dark:bg-slate-700 shadow-sm' : 'hover:bg-white/50 dark:hover:bg-slate-700/50 text-slate-400'}`}
-                       >
-                         <div className={`w-2.5 h-2.5 rounded-full ${highlightLevel > 0 ? 'bg-orange-500' : 'bg-slate-300 dark:bg-slate-600'}`}></div>
-                       </button>
-                       <button onClick={() => onToggleBookmark(q.id)} className={`p-1.5 rounded-full transition-all ${isBookmarked ? 'bg-white dark:bg-slate-700 shadow-sm text-amber-400' : 'hover:bg-white/50 dark:hover:bg-slate-700/50 text-slate-300 dark:text-slate-600'}`}>
-                         <Star size={16} className={isBookmarked ? "fill-amber-400" : "currentColor"} />
-                       </button>
+              {isWrong && (
+                  <div className="flex items-center">
+                      <span className="text-[10px] text-rose-500 bg-rose-50 dark:bg-rose-900/30 px-2 py-1 rounded mr-2">错误次数: {wrongCount}</span>
+                      <button 
+                        onClick={() => onRemoveWrong(q.id)}
+                        className="text-[10px] text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 bg-slate-100 dark:bg-slate-800 hover:bg-rose-50 dark:hover:bg-rose-900/50 px-2 py-1 rounded flex items-center transition-colors"
+                      >
+                          <Trash2 size={10} className="mr-1"/> 移除
+                      </button>
                   </div>
-              </div>
+              )}
           </div>
           
-          <div className={`text-slate-800 dark:text-slate-100 font-bold mb-8 leading-loose tracking-wide whitespace-pre-wrap ${contentSize}`} style={{ textShadow: '0 1px 1px rgba(0,0,0,0.02)' }}>
+          <div className={`text-slate-800 dark:text-slate-100 font-bold mb-8 leading-loose tracking-wide whitespace-pre-wrap ${contentSize}`} style={{ textShadow: '0 1px 1px rgba(0,0,0,0.05)' }}>
              <HighlightIndicator level={highlightLevel} />
              {q.content}
           </div>
@@ -589,10 +578,10 @@ const QuestionCard = memo(({
                    {['√', '×'].map((opt, idx) => {
                        const val = opt === '√' ? '正确' : '错误';
                        const isSelected = data.answers[q.id] === val;
-                       let btnClass = "bg-slate-50 border-slate-200 text-slate-400 hover:bg-slate-100 dark:bg-slate-800/50 dark:border-slate-700 dark:text-slate-500 dark:hover:bg-slate-800";
+                       let btnClass = "bg-slate-50 border-slate-200 text-slate-400 hover:bg-slate-100 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-500 dark:hover:bg-slate-750";
                        
                        if (isSelected) {
-                           btnClass = opt === '√' ? "bg-emerald-50 border-emerald-200 text-emerald-600 dark:bg-emerald-900/40 dark:border-emerald-800 dark:text-emerald-400 shadow-sm" : "bg-rose-50 border-rose-200 text-rose-600 dark:bg-rose-900/40 dark:border-rose-800 dark:text-rose-400 shadow-sm";
+                           btnClass = opt === '√' ? "bg-emerald-50 border-emerald-200 text-emerald-600 dark:bg-emerald-900/40 dark:border-emerald-800 dark:text-emerald-400" : "bg-rose-50 border-rose-200 text-rose-600 dark:bg-rose-900/40 dark:border-rose-800 dark:text-rose-400";
                        }
 
                        if ((!data.isExam && data.showAnswer) || data.examSubmitted) {
@@ -625,88 +614,107 @@ const QuestionCard = memo(({
                   value={data.answers[q.id] || ''}
                   onChange={(val) => onAnswerChange(q.id, val, q.type)}
                   disabled={data.examSubmitted}
-                  placeholder={q.type === 'fill' ? "在此输入填空答案..." : "在此输入简答内容..."}
+                  placeholder={q.type === 'fill' ? "请输入填空答案..." : "请输入简答内容..."}
                   fontSizeClass={optionSize}
               />
           )}
 
-          {/* 答案解析区域 */}
+          {/* 底部操作区：考试模式下强制显示确认按钮 */}
+          {!data.isExam ? (
+              <div className="mt-6 flex justify-end gap-3">
+                  {!data.showAnswer && (
+                       <button 
+                          onClick={() => onSetShowAnswer(true)}
+                          className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-sm font-medium hover:bg-indigo-700 flex items-center shadow-lg shadow-indigo-100 dark:shadow-none active:scale-95 transition-transform"
+                      >
+                          查看解析 <Eye size={16} className="ml-2"/>
+                      </button>
+                  )}
+                  {data.showAnswer && !isLastQuestion && (
+                      <button 
+                          onClick={() => onNext(0)}
+                          className="px-6 py-3 bg-slate-800 text-white dark:bg-slate-700 dark:hover:bg-slate-600 rounded-xl text-sm font-medium hover:bg-slate-700 flex items-center shadow-lg shadow-slate-200 dark:shadow-none active:scale-95 transition-transform"
+                      >
+                          下一题 <ChevronRight size={16} className="ml-1"/>
+                      </button>
+                  )}
+              </div>
+          ) : (
+              /* 考试模式：所有题目类型统一显示“确认并下一题” */
+               !data.examSubmitted && (
+                   <div className="mt-6 flex justify-end">
+                       {isLastQuestion ? (
+                            <button 
+                              onClick={onSubmitExam}
+                              className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-sm font-medium hover:bg-indigo-700 flex items-center shadow-lg shadow-indigo-200 dark:shadow-none active:scale-95 transition-transform"
+                            >
+                              <CheckCircle size={16} className="mr-2" /> 确认并交卷
+                            </button>
+                       ) : (
+                            <button 
+                              onClick={() => onNext(0)}
+                              className="px-6 py-3 bg-slate-800 text-white dark:bg-slate-700 dark:hover:bg-slate-600 rounded-xl text-sm font-medium hover:bg-slate-700 flex items-center shadow-lg shadow-slate-200 dark:shadow-none active:scale-95 transition-transform"
+                            >
+                              确认并下一题 <ChevronRight size={16} className="ml-1"/>
+                            </button>
+                       )}
+                   </div>
+               )
+          )}
+
           {(data.showAnswer || data.examSubmitted) && (
-              <div className="mt-8 p-6 bg-emerald-50/50 dark:bg-emerald-900/20 rounded-2xl border border-emerald-100 dark:border-emerald-800/50 animate-in fade-in slide-in-from-bottom-4">
-                  <div className="flex items-center text-emerald-600 dark:text-emerald-400 text-xs font-bold uppercase tracking-wider mb-3">
-                      <CheckCircle size={16} className="mr-1.5"/> 参考答案
+              <div className="mt-8 p-6 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-700 animate-in fade-in slide-in-from-bottom-2">
+                  <div className="flex items-center text-slate-400 dark:text-slate-500 text-xs font-bold uppercase tracking-wider mb-2">
+                      <CheckCircle size={14} className="mr-1 text-emerald-500"/> 参考答案
                   </div>
-                  <div className={`text-slate-800 dark:text-slate-200 font-bold whitespace-pre-wrap ${optionSize}`}>{q.answer}</div>
+                  <div className={`text-slate-800 dark:text-slate-200 font-medium whitespace-pre-wrap ${optionSize}`}>{q.answer}</div>
                   
                   {data.examSubmitted && q.type !== 'essay' && (
-                     <div className="mt-4 pt-4 border-t border-emerald-100 dark:border-emerald-800/50">
-                         <div className="text-xs text-slate-400 mb-1">你的答案</div>
-                         <div className={`text-sm font-medium ${ (data.answers[q.id]||'').replace(/\s/g,'').toUpperCase() === (q.answer||'').replace(/\s/g,'').toUpperCase() ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500'}`}>
-                            {data.answers[q.id] || '未作答'}
-                         </div>
+                     <div className={`mt-2 text-sm py-2 px-3 rounded-lg inline-block ${ (data.answers[q.id]||'').replace(/\s/g,'').toUpperCase() === (q.answer||'').replace(/\s/g,'').toUpperCase() ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300' : 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300'}`}>
+                         你的答案: {data.answers[q.id] || '未作答'}
                      </div>
                   )}
               </div>
           )}
       </div>
 
-      {/* 底部控制栏 - 悬浮式 */}
-      <div className="fixed bottom-6 left-6 right-6 z-30 safe-area-bottom">
-           <div className={`flex justify-between items-center p-2 rounded-full shadow-xl border border-white/20 dark:border-white/10 ${cardBgClass}`}>
-               <button 
-                  disabled={data.index === 0}
-                  onClick={onPrev}
-                  className="w-12 h-12 flex items-center justify-center rounded-full text-slate-500 dark:text-slate-400 disabled:opacity-30 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-               >
-                  <ChevronLeft size={24} />
-               </button>
+      <div className={`fixed bottom-0 left-0 w-full p-4 flex justify-between items-center max-w-2xl mx-auto right-0 z-20 shadow-[0_-5px_20px_rgba(0,0,0,0.02)] dark:shadow-none safe-area-bottom border-t border-slate-100 dark:border-slate-800 ${cardBgClass}`}>
+           <button 
+              disabled={data.index === 0}
+              onClick={onPrev}
+              className="p-3 rounded-full text-slate-500 dark:text-slate-400 disabled:opacity-30 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+           >
+              <ChevronLeft size={24} />
+           </button>
 
-               <div className="flex-1 flex justify-center px-4">
-                   {/* 考试模式的交卷按钮 - 当到底部时显示大按钮 */}
-                   {data.isExam && !data.examSubmitted ? (
-                       isLastQuestion ? (
-                           <button 
-                              onClick={onSubmitExam}
-                              className="flex items-center px-6 py-3 bg-indigo-600 text-white rounded-full font-bold shadow-lg shadow-indigo-200 dark:shadow-none hover:bg-indigo-700 transition-all active:scale-95 w-full justify-center"
-                           >
-                              <CheckCircle size={18} className="mr-2" /> 确认并交卷
-                           </button>
-                       ) : (
-                           <button 
-                              onClick={() => onNext(0)}
-                              className="flex items-center px-6 py-3 bg-indigo-600 text-white rounded-full font-bold shadow-lg shadow-indigo-200 dark:shadow-none hover:bg-indigo-700 transition-all active:scale-95 w-full justify-center"
-                           >
-                              确认并下一题 <ChevronRight size={18} className="ml-1" />
-                           </button>
-                       )
-                   ) : (
-                       /* 刷题模式的操作 */
-                       !data.showAnswer ? (
-                           <button 
-                              onClick={() => onSetShowAnswer(true)}
-                              className="flex items-center px-6 py-3 bg-slate-800 dark:bg-slate-700 text-white rounded-full font-bold shadow-lg hover:bg-slate-700 dark:hover:bg-slate-600 transition-all active:scale-95"
-                          >
-                              <Eye size={18} className="mr-2" /> 查看解析
-                          </button>
-                       ) : (
-                           <button 
-                              onClick={() => onNext(0)}
-                              className="flex items-center px-8 py-3 bg-indigo-600 text-white rounded-full font-bold shadow-lg shadow-indigo-200 dark:shadow-none hover:bg-indigo-700 transition-all active:scale-95"
-                          >
-                              下一题 <ChevronRight size={18} className="ml-1" />
-                          </button>
-                       )
-                   )}
+           {!data.isExam && (
+               <div className="text-xs text-slate-400 dark:text-slate-500 font-medium">
+                   {data.showAnswer ? '已显示解析' : (['single', 'judgment'].includes(q.type) ? '点击选项显示结果' : '思考后点击查看解析')}
                </div>
-
+           )}
+           
+           {data.isExam && !data.examSubmitted && isLastQuestion && (
                <button 
-                  disabled={data.index === data.list.length - 1}
-                  onClick={() => onNext(0)}
-                  className="w-12 h-12 flex items-center justify-center rounded-full text-slate-500 dark:text-slate-400 disabled:opacity-30 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  onClick={onSubmitExam}
+                  className="flex items-center px-8 py-3 bg-indigo-600 text-white rounded-full font-bold shadow-lg shadow-indigo-200 dark:shadow-none hover:bg-indigo-700 transition-all active:scale-95"
                >
-                  <ChevronRight size={24} />
+                  <CheckCircle size={18} className="mr-2" /> 交卷
                </button>
-           </div>
+           )}
+          
+          {data.examSubmitted && (
+               <div className="text-indigo-600 dark:text-indigo-400 font-bold text-lg">
+                  得分: {Object.values(data.answers).filter((a, i) => (a||'').replace(/\s/g,'').toUpperCase() === (data.list[i].answer||'').replace(/\s/g,'').toUpperCase()).length} / {data.list.length}
+               </div>
+          )}
+
+           <button 
+              disabled={data.index === data.list.length - 1}
+              onClick={() => onNext(0)}
+              className="p-3 rounded-full text-slate-500 dark:text-slate-400 disabled:opacity-30 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+           >
+              <ChevronRight size={24} />
+           </button>
       </div>
     </div>
   );
@@ -1083,6 +1091,9 @@ export default function App() {
           if (!prev.isExam && type !== 'multiple') {
               newShowAnswer = true;
           }
+
+          // 移除所有自动跳转逻辑
+          // 模拟考模式下，用户必须手动点击“确认并下一题”
 
           return { ...prev, answers: newAnswers, showAnswer: newShowAnswer };
       });
